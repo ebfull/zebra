@@ -21,7 +21,7 @@ use std::{
     str::FromStr,
 };
 
-use bech32::{self, FromBase32, ToBase32};
+use bech32::{self, FromBase32, ToBase32, Variant};
 use rand_core::{CryptoRng, RngCore};
 
 use crate::{
@@ -206,7 +206,7 @@ impl fmt::Display for SpendingKey {
             _ => sk_hrp::TESTNET,
         };
 
-        bech32::encode_to_fmt(f, hrp, &self.bytes.to_base32()).unwrap()
+        bech32::encode_to_fmt(f, hrp, &self.bytes.to_base32(), Variant::Bech32).unwrap()
     }
 }
 
@@ -215,7 +215,7 @@ impl FromStr for SpendingKey {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match bech32::decode(s) {
-            Ok((hrp, bytes)) => {
+            Ok((hrp, bytes, Variant::Bech32)) => {
                 let decoded = Vec::<u8>::from_base32(&bytes).unwrap();
 
                 let mut decoded_bytes = [0u8; 32];
@@ -527,7 +527,7 @@ impl fmt::Display for IncomingViewingKey {
             _ => ivk_hrp::TESTNET,
         };
 
-        bech32::encode_to_fmt(f, hrp, &self.scalar.to_bytes().to_base32()).unwrap()
+        bech32::encode_to_fmt(f, hrp, &self.scalar.to_bytes().to_base32(), Variant::Bech32).unwrap()
     }
 }
 
@@ -576,7 +576,7 @@ impl FromStr for IncomingViewingKey {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match bech32::decode(s) {
-            Ok((hrp, bytes)) => {
+            Ok((hrp, bytes, Variant::Bech32)) => {
                 let decoded = Vec::<u8>::from_base32(&bytes).unwrap();
 
                 let mut scalar_bytes = [0u8; 32];
@@ -833,7 +833,7 @@ impl fmt::Display for FullViewingKey {
             _ => fvk_hrp::TESTNET,
         };
 
-        bech32::encode_to_fmt(f, hrp, bytes.get_ref().to_base32()).unwrap()
+        bech32::encode_to_fmt(f, hrp, bytes.get_ref().to_base32(), Variant::Bech32).unwrap()
     }
 }
 
@@ -842,7 +842,7 @@ impl FromStr for FullViewingKey {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match bech32::decode(s) {
-            Ok((hrp, bytes)) => {
+            Ok((hrp, bytes, Variant::Bech32)) => {
                 let mut decoded_bytes = io::Cursor::new(Vec::<u8>::from_base32(&bytes).unwrap());
 
                 let authorizing_key_bytes = decoded_bytes.read_32_bytes()?;
