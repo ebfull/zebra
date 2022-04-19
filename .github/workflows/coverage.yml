@@ -41,7 +41,7 @@ jobs:
       - name: Generate detailed html coverage report for github artifact
         run: |
           $(rustc --print target-libdir)/../bin/llvm-cov show -format=html -ignore-filename-regex=".*/.cargo/registry/.*" -ignore-filename-regex=".*/.cargo/git/.*" -ignore-filename-regex=".*/.rustup/.*" -Xdemangler=rustfilt -show-instantiations -output-dir=./coverage -instr-profile=./test.profdata $(printf -- "-object %s " $(cat filenames.txt))
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: coverage
           path: ./coverage
